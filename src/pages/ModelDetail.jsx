@@ -1,3 +1,4 @@
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useTheme } from '../ThemeContext'
 import { useParams, Link } from 'react-router-dom'
 import { ArrowLeft, Star, Shield, Package, MessageCircle, Settings } from 'lucide-react'
@@ -30,10 +31,18 @@ export default function ModelDetail() {
   const [selectedConfig, setSelectedConfig] = useState(0)
   const [unlocked, setUnlocked] = useState(false)
   const [paying, setPaying] = useState(false)
+  const [activeImage, setActiveImage] = useState(0)
 
   const unlockFee = model ? Math.max(499, Math.round(
     (model.configPrices[selectedConfig] * 0.015 + (model.rating - 4) * 500) / 100
   ) * 100) : 499
+  const mediaImages = [
+  'https://picsum.photos/seed/proto1/800/400',
+  'https://picsum.photos/seed/proto2/800/400',
+  'https://picsum.photos/seed/proto3/800/400',
+  'https://picsum.photos/seed/proto4/800/400',
+]
+const demoVideo = 'https://www.youtube.com/embed/dQw4w9WgXcQ'
 
   if (!model) return (
     <div style={{ textAlign: 'center', padding: '5rem', color: '#888', background: bg, minHeight: '100vh' }}>
@@ -69,6 +78,58 @@ export default function ModelDetail() {
 
           {/* Left */}
           <div>
+            {/* Media Gallery */}
+<div className="card" style={{ padding: '0', marginBottom: '1.5rem', overflow: 'hidden' }}>
+  {/* Main Image */}
+  <div style={{ position: 'relative', height: '280px', overflow: 'hidden', background: '#111' }}>
+    <img
+      src={mediaImages[activeImage]}
+      alt="product"
+      style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'opacity 0.3s ease' }}
+    />
+    <button onClick={() => setActiveImage(i => (i - 1 + mediaImages.length) % mediaImages.length)}
+      style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', border: 'none', borderRadius: '50%', width: '36px', height: '36px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
+      <ChevronLeft size={18} />
+    </button>
+    <button onClick={() => setActiveImage(i => (i + 1) % mediaImages.length)}
+      style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', border: 'none', borderRadius: '50%', width: '36px', height: '36px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
+      <ChevronRight size={18} />
+    </button>
+    <div style={{ position: 'absolute', bottom: '0.8rem', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '0.4rem' }}>
+      {mediaImages.map((_, i) => (
+        <div key={i} onClick={() => setActiveImage(i)} style={{ width: '8px', height: '8px', borderRadius: '50%', background: activeImage === i ? '#fff' : 'rgba(255,255,255,0.4)', cursor: 'pointer', transition: 'background 0.2s' }} />
+      ))}
+    </div>
+  </div>
+
+  {/* Thumbnails */}
+  <div style={{ display: 'flex', gap: '0.5rem', padding: '0.8rem', background: dark ? '#111' : '#f9f9f9', borderTop: `1px solid ${border}` }}>
+    {mediaImages.map((img, i) => (
+      <img key={i} src={img} alt={`thumb-${i}`} onClick={() => setActiveImage(i)}
+        style={{ width: '64px', height: '48px', objectFit: 'cover', borderRadius: '6px', cursor: 'pointer', border: activeImage === i ? '2px solid #6c63ff' : `2px solid ${border}`, transition: 'border 0.2s', opacity: activeImage === i ? 1 : 0.6 }} />
+    ))}
+    {/* Video thumbnail */}
+    <div onClick={() => setActiveImage(4)}
+      style={{ width: '64px', height: '48px', borderRadius: '6px', cursor: 'pointer', background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center', border: activeImage === 4 ? '2px solid #6c63ff' : `2px solid ${border}`, flexShrink: 0 }}>
+      <span style={{ fontSize: '1.2rem' }}>▶️</span>
+    </div>
+  </div>
+
+  {/* Video embed - shows when video thumbnail clicked */}
+  {activeImage === 4 && (
+    <div style={{ padding: '0 0.8rem 0.8rem' }}>
+      <iframe
+        width="100%" height="220"
+        src={demoVideo}
+        title="Demo Video"
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+        style={{ borderRadius: '8px' }}
+      />
+    </div>
+  )}
+</div>
             {/* Header */}
             <div className="card" style={{ padding: '2rem', marginBottom: '1.5rem' }}>
               <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
