@@ -1,6 +1,6 @@
 import { useTheme } from '../ThemeContext'
 import { useParams, Link } from 'react-router-dom'
-import { ArrowLeft, Star, Shield, Cpu, Package, MessageCircle, Settings } from 'lucide-react'
+import { ArrowLeft, Star, Shield, Package, MessageCircle, Settings } from 'lucide-react'
 import { useState } from 'react'
 
 const allModels = [
@@ -20,19 +20,23 @@ const allModels = [
 
 export default function ModelDetail() {
   const { dark } = useTheme()
-const bg = dark ? '#0a0a0a' : '#f8f8f8'
-const cardBg = dark ? '#111' : '#fff'
-const border = dark ? '#222' : '#eee'
-const text = dark ? '#f0f0f0' : '#111'
-const subtext = dark ? '#aaa' : '#555'
+  const bg = dark ? '#0a0a0a' : '#f8f8f8'
+  const cardBg = dark ? '#111' : '#fff'
+  const border = dark ? '#222' : '#eee'
+  const text = dark ? '#f0f0f0' : '#111'
+  const subtext = dark ? '#aaa' : '#555'
   const { id } = useParams()
   const model = allModels.find(m => m.id === parseInt(id))
   const [selectedConfig, setSelectedConfig] = useState(0)
   const [unlocked, setUnlocked] = useState(false)
   const [paying, setPaying] = useState(false)
 
+  const unlockFee = model ? Math.max(499, Math.round(
+    (model.configPrices[selectedConfig] * 0.015 + (model.rating - 4) * 500) / 100
+  ) * 100) : 499
+
   if (!model) return (
-    <div style={{ textAlign: 'center', padding: '5rem', color: '#888' }}>
+    <div style={{ textAlign: 'center', padding: '5rem', color: '#888', background: bg, minHeight: '100vh' }}>
       <div style={{ fontSize: '3rem' }}>🔍</div>
       <div style={{ fontSize: '1.2rem', fontWeight: '600', marginTop: '1rem' }}>Model not found</div>
       <Link to="/marketplace" className="btn-primary" style={{ marginTop: '1.5rem', display: 'inline-flex' }}>Back to Marketplace</Link>
@@ -48,12 +52,13 @@ const subtext = dark ? '#aaa' : '#555'
   }
 
   return (
-<div className="page-bg" style={{ background: '#f8f8f8', minHeight: '100vh' }}>
+    <div style={{ background: bg, minHeight: '100vh', transition: 'background 0.3s ease', color: text }}>
+
       {/* Back */}
-      <div style={{ background: '#fff', borderBottom: '1px solid #eee', padding: '1rem 2rem' }}>
-        <Link to="/marketplace" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: '#555', fontSize: '0.9rem', fontWeight: '500' }}
+      <div style={{ background: cardBg, borderBottom: `1px solid ${border}`, padding: '1rem 2rem', transition: 'background 0.3s ease' }}>
+        <Link to="/marketplace" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: '#888', fontSize: '0.9rem', fontWeight: '500' }}
           onMouseEnter={e => e.currentTarget.style.color = '#6c63ff'}
-          onMouseLeave={e => e.currentTarget.style.color = '#555'}
+          onMouseLeave={e => e.currentTarget.style.color = '#888'}
         >
           <ArrowLeft size={16} /> Back to Marketplace
         </Link>
@@ -68,9 +73,9 @@ const subtext = dark ? '#aaa' : '#555'
             <div className="card" style={{ padding: '2rem', marginBottom: '1.5rem' }}>
               <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
                 <span className={`tag ${model.type === 'Hardware' ? 'tag-green' : ''}`}>{model.type}</span>
-                <span className="tag" style={{ background: '#fff8e1', color: '#d97706' }}>{model.category}</span>
+                <span className="tag" style={{ background: dark ? '#2a1a00' : '#fff8e1', color: '#d97706' }}>{model.category}</span>
                 {model.tags.map(t => (
-                  <span key={t} style={{ background: '#f5f5f5', color: '#555', padding: '0.25rem 0.6rem', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '500' }}>{t}</span>
+                  <span key={t} style={{ background: dark ? '#222' : '#f5f5f5', color: dark ? '#aaa' : '#555', padding: '0.25rem 0.6rem', borderRadius: '6px', fontSize: '0.75rem', fontWeight: '500' }}>{t}</span>
                 ))}
               </div>
               <h1 style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '0.5rem' }}>{model.name}</h1>
@@ -78,7 +83,7 @@ const subtext = dark ? '#aaa' : '#555'
                 <Link to={`/builder/${model.builderId}`} style={{ color: '#6c63ff', fontWeight: '600', fontSize: '0.9rem' }}>by {model.builder}</Link>
                 <span style={{ color: '#f59e0b', fontWeight: '600', fontSize: '0.9rem' }}>★ {model.rating}</span>
               </div>
-              <p style={{ color: '#555', lineHeight: 1.8, fontSize: '0.95rem' }}>{model.longDesc}</p>
+              <p style={{ color: subtext, lineHeight: 1.8, fontSize: '0.95rem' }}>{model.longDesc}</p>
             </div>
 
             {/* Configurations */}
@@ -91,17 +96,13 @@ const subtext = dark ? '#aaa' : '#555'
                 {model.configs.map((config, i) => (
                   <div key={i} onClick={() => setSelectedConfig(i)} style={{
                     padding: '1rem 1.2rem', borderRadius: '10px', cursor: 'pointer',
-                    border: selectedConfig === i ? '2px solid #6c63ff' : '2px solid #eee',
-                    background: selectedConfig === i ? '#f0efff' : '#fff',
+                    border: selectedConfig === i ? '2px solid #6c63ff' : `2px solid ${border}`,
+                    background: selectedConfig === i ? (dark ? '#2a2040' : '#f0efff') : cardBg,
                     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                     transition: 'all 0.2s'
                   }}>
-                    <div>
-                      <div style={{ fontWeight: '600', fontSize: '0.95rem', color: selectedConfig === i ? '#6c63ff' : '#111' }}>{config}</div>
-                    </div>
-                    <div style={{ fontWeight: '800', color: '#6c63ff', fontSize: '1rem' }}>
-                      ₹{model.configPrices[i].toLocaleString('en-IN')}
-                    </div>
+                    <div style={{ fontWeight: '600', fontSize: '0.95rem', color: selectedConfig === i ? '#6c63ff' : text }}>{config}</div>
+                    <div style={{ fontWeight: '800', color: '#6c63ff', fontSize: '1rem' }}>₹{model.configPrices[i].toLocaleString('en-IN')}</div>
                   </div>
                 ))}
               </div>
@@ -115,12 +116,12 @@ const subtext = dark ? '#aaa' : '#555'
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 {model.reviews.map((r, i) => (
-                  <div key={i} style={{ padding: '1rem', background: '#f9f9f9', borderRadius: '10px' }}>
+                  <div key={i} style={{ padding: '1rem', background: dark ? '#222' : '#f9f9f9', borderRadius: '10px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                       <span style={{ fontWeight: '600', fontSize: '0.9rem' }}>{r.user}</span>
                       <span style={{ color: '#f59e0b', fontSize: '0.85rem' }}>{'★'.repeat(r.rating)}</span>
                     </div>
-                    <p style={{ color: '#555', fontSize: '0.88rem', lineHeight: 1.6 }}>{r.text}</p>
+                    <p style={{ color: subtext, fontSize: '0.88rem', lineHeight: 1.6 }}>{r.text}</p>
                   </div>
                 ))}
               </div>
@@ -140,28 +141,18 @@ const subtext = dark ? '#aaa' : '#555'
                 <Package size={16} /> Buy Now
               </button>
 
-              {/* Contact Builder */}
               {!unlocked ? (
                 <div>
-                  <div style={{
-                    background: '#fff8e1', border: '1px solid #fde68a',
-                    borderRadius: '10px', padding: '1rem', marginBottom: '0.8rem',
-                    fontSize: '0.82rem', color: '#92400e', lineHeight: 1.6
-                  }}>
+                  <div style={{ background: dark ? '#2a1a00' : '#fff8e1', border: `1px solid ${dark ? '#92400e' : '#fde68a'}`, borderRadius: '10px', padding: '1rem', marginBottom: '0.8rem', fontSize: '0.82rem', color: dark ? '#fcd34d' : '#92400e', lineHeight: 1.6 }}>
                     <Shield size={14} style={{ marginRight: '0.3rem', verticalAlign: 'middle' }} />
-                    Pay a small unlock fee of <strong>₹499</strong> to contact this builder directly. This prevents spam and protects both parties.
+                    Pay a small unlock fee of <strong>₹{unlockFee.toLocaleString('en-IN')}</strong> to contact this builder directly. This prevents spam and protects both parties.
                   </div>
-                  <button onClick={handleUnlock} className="btn-secondary" style={{
-                    width: '100%', justifyContent: 'center', padding: '0.9rem'
-                  }}>
-                    {paying ? '⏳ Processing...' : <><MessageCircle size={16} /> Unlock Builder Contact · ₹499</>}
+                  <button onClick={handleUnlock} className="btn-secondary" style={{ width: '100%', justifyContent: 'center', padding: '0.9rem' }}>
+                    {paying ? '⏳ Processing...' : <><MessageCircle size={16} /> Unlock Builder Contact · ₹{unlockFee.toLocaleString('en-IN')}</>}
                   </button>
                 </div>
               ) : (
-                <div style={{
-                  background: '#edfdf5', border: '1px solid #6ee7b7',
-                  borderRadius: '10px', padding: '1.2rem', textAlign: 'center'
-                }}>
+                <div style={{ background: '#edfdf5', border: '1px solid #6ee7b7', borderRadius: '10px', padding: '1.2rem', textAlign: 'center' }}>
                   <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>✅</div>
                   <div style={{ fontWeight: '700', color: '#065f46', marginBottom: '0.3rem' }}>Builder Unlocked!</div>
                   <div style={{ fontSize: '0.85rem', color: '#065f46' }}>contact@{model.builder.toLowerCase()}.in</div>
@@ -171,10 +162,10 @@ const subtext = dark ? '#aaa' : '#555'
                 </div>
               )}
 
-              <div style={{ borderTop: '1px solid #eee', marginTop: '1.2rem', paddingTop: '1.2rem' }}>
-                {[['🔒', 'Escrow-protected payment'], ['🔄', 'Configuration changes allowed'], ['📦', 'Source files included'], ['💬', 'Builder support included']].map(([icon, text]) => (
-                  <div key={text} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.6rem', fontSize: '0.82rem', color: '#555' }}>
-                    <span>{icon}</span> {text}
+              <div style={{ borderTop: `1px solid ${border}`, marginTop: '1.2rem', paddingTop: '1.2rem' }}>
+                {[['🔒', 'Escrow-protected payment'], ['🔄', 'Configuration changes allowed'], ['📦', 'Source files included'], ['💬', 'Builder support included']].map(([icon, label]) => (
+                  <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.6rem', fontSize: '0.82rem', color: subtext }}>
+                    <span>{icon}</span> {label}
                   </div>
                 ))}
               </div>

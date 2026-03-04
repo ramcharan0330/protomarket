@@ -1,16 +1,87 @@
-# React + Vite
+# ProtoMarket 🚀
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**India's Prototype Marketplace** — A platform where engineers and builders list, sell, and take custom orders for software and hardware prototypes.
 
-Currently, two official plugins are available:
+🔗 **Live Demo:** [protomarket-ozhr.vercel.app](https://protomarket-ozhr.vercel.app)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## What is ProtoMarket?
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+ProtoMarket connects prototype builders with buyers across 6 sectors — Healthcare, Agriculture, Education, Finance, Defense, and Energy. Buyers can browse ready-made prototypes, configure them, or commission fully custom builds directly from verified builders.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Features
+
+- 🔐 **Google OAuth Login** with buyer/seller role selection (Firebase Auth)
+- 🛒 **Marketplace** with real-time search, sector filters, type filters, and sorting
+- ⚙️ **Configuration Selector** — each prototype has multiple tiers with different prices
+- 🔓 **Builder Contact Unlock** — escrow-style fee system to contact builders directly
+- 📊 **Builder Dashboard** — view stats, manage listings, accept/decline custom requests
+- 📈 **Trending Page** — leaderboard, rising sectors, live activity feed
+- 🛠️ **Custom Orders** — browse builders by sector, submit custom build requests
+- 🌙 **Dark / Light Mode** — persisted across sessions
+- 📱 **Responsive Design** — works on mobile and desktop
+
+---
+
+## Tech Stack
+
+| Tech | Usage |
+|------|-------|
+| React 18 | Frontend framework |
+| Vite | Build tool |
+| React Router v6 | Client-side routing |
+| Firebase Auth | Google OAuth authentication |
+| Lucide React | Icon library |
+| Vercel | Deployment |
+
+---
+
+## Pages
+
+| Route | Page |
+|-------|------|
+| `/` | Home — hero, sectors, featured prototypes |
+| `/marketplace` | Browse all prototypes with filters |
+| `/model/:id` | Model detail with configs, reviews, buy panel |
+| `/builder/:id` | Builder profile with listings and stats |
+| `/trending` | Leaderboard, rising sectors, live activity |
+| `/custom-orders` | Custom build request directory |
+| `/dashboard` | Builder dashboard (builder login required) |
+| `/login` | Google OAuth login with role selection |
+
+---
+
+## Getting Started
+```bash
+# Clone the repo
+git clone https://github.com/ramcharan0330/protomarket.git
+cd protomarket
+
+# Install dependencies
+npm install
+
+# Start dev server
+npm run dev
+```
+
+---
+
+## Project Status
+
+🚧 Currently in Beta — this is a frontend prototype with mocked data. Backend, payments, and real listings are planned for future development.
+
+---
+
+## Author
+
+Built by ** Ram Charan** as a resume project to demonstrate React, Firebase, and full-stack UI skills.
+```
+
+Save it, then push to GitHub:
+```
+git add .
+git commit -m "add README"
+git push
